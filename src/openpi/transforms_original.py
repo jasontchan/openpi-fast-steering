@@ -282,55 +282,13 @@ class TokenizeFASTInputs(DataTransformFn):
             prompt = prompt.item()
 
         state, actions, arrows = data["state"], data.get("actions"), data.get("arrows")
-        tokens, token_mask, ar_mask, loss_mask = self.tokenizer.tokenize(prompt, state, actions)
-        print("initial joint velocity arrows:", arrows)
-        MAX_ARROW_TOKENS = 32 
-
-        arrows = np.asarray(arrows, dtype=np.float32).reshape(-1)
-
-        arrows_action_chunk = np.zeros((1, 32, 32), dtype=np.float32)
-        arrows_action_chunk[0, :, :arrows.shape[0]] = arrows[None, :]
-
-        fast_arrows = self.tokenizer._fast_tokenizer(arrows_action_chunk)[0]
-        fast_arrows_pg = self.tokenizer._act_tokens_to_paligemma_tokens(fast_arrows).astype(np.int32)
-
-
-        # pg -> raw FAST tokens
-        fast_tokens_back = (
-            self.tokenizer._paligemma_tokenizer.vocab_size()
-            - 1
-            - self.tokenizer._fast_skip_tokens
-            - fast_arrows_pg
-        )
-
-        decoded = self.tokenizer._fast_tokenizer.decode(
-            [fast_tokens_back.tolist()],
-            time_horizon=32,
-            action_dim=32,
-        )[0]
-
-        print("decoded arrow action shape:", decoded.shape)
-        print("decoded first timestep:", decoded[0, :8])
-        print("decoded mean first 8 dims:", decoded[:, :8].mean(axis=0))
-
-
-        tokenized_arrows = np.zeros((MAX_ARROW_TOKENS,), dtype=np.int32)
-        tokenized_arrows_mask = np.zeros((MAX_ARROW_TOKENS,), dtype=bool)
-
-        #if arrows are nonzero and valid sequence (greater than 1)
-        if not np.allclose(arrows, 0.0) and len(fast_arrows_pg) > 1:
-            n = min(len(fast_arrows_pg), MAX_ARROW_TOKENS)
-            tokenized_arrows[:n] = fast_arrows_pg[:n]
-            tokenized_arrows_mask[:n] = True
-
+        tokens, token_mask, ar_mask, loss_mask = self.tokenizer.tokenize(prompt, state, actions, arrows)
         return {
             **data,
             "tokenized_prompt": tokens,
             "tokenized_prompt_mask": token_mask,
             "token_ar_mask": ar_mask,
             "token_loss_mask": loss_mask,
-            "tokenized_arrows": tokenized_arrows,
-            "tokenized_arrows_mask": tokenized_arrows_mask,
         }
 
 

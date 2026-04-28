@@ -126,7 +126,6 @@ class Pi0(_model.BaseModel):
 
         # add language (aka tokenized inputs)
         if obs.tokenized_prompt is not None:
-            # jax.debug.print("obs.tokenized_prompt is {otp}", otp=obs.tokenized_prompt)
             tokenized_inputs = self.PaliGemma.llm(obs.tokenized_prompt, method="embed")
             tokens.append(tokenized_inputs)
             input_mask.append(obs.tokenized_prompt_mask)
@@ -157,8 +156,8 @@ class Pi0(_model.BaseModel):
             # image/language inputs do not attend to state or actions
             ar_mask += [True]
 
-        # jax.debug.print("NOISY ACTIONS: {noisy_actions}", noisy_actions=noisy_actions)
         action_tokens = self.action_in_proj(noisy_actions)
+
         # embed timestep using sine-cosine positional encoding with sensitivity in the range [0, 1]
         time_emb = posemb_sincos(timestep, self.action_in_proj.out_features, min_period=4e-3, max_period=4.0)
         if self.pi05:
@@ -167,8 +166,31 @@ class Pi0(_model.BaseModel):
             time_emb = nnx.swish(time_emb)
             time_emb = self.time_mlp_out(time_emb)
             time_emb = nnx.swish(time_emb)
+
             action_expert_tokens = action_tokens
             adarms_cond = time_emb
+
+            #ADARMS PERTURBATION
+            arrows = jnp.asarray(obs.arrows)
+            if arrows.ndim == 1:
+                arrows = arrows[None, :]
+            elif arrows.ndim > 2:
+                arrows = arrows.reshape(arrows.shape[0], -1)
+            
+            arrow_vec = arrows[:, :7]
+
+            #this builds a fake action chunk from arrows and the projects it
+            arrow_action = jnp.zeros_like(noisy_actions)
+            scale = 5.0
+            arrow_action = arrow_action.at[:, 0:8, 0:7].set(scale * arrow_vec[:, None, :])
+
+            token_delta = self.action_in_proj(arrow_action)
+
+            #collapse the horizon into a single conditioning vector
+            control_vec = jnp.mean(token_delta[:, 0:8, :], axis=1)
+
+            cond_scale = 0.5
+            adarms_cond = adarms_cond + cond_scale * control_vec
         else:
             # mix timestep + action information using an MLP (no adaRMS)
             time_tokens = einops.repeat(time_emb, "b emb -> b s emb", s=self.action_horizon)

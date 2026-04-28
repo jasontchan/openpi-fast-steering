@@ -126,7 +126,6 @@ class Pi0(_model.BaseModel):
 
         # add language (aka tokenized inputs)
         if obs.tokenized_prompt is not None:
-            # jax.debug.print("obs.tokenized_prompt is {otp}", otp=obs.tokenized_prompt)
             tokenized_inputs = self.PaliGemma.llm(obs.tokenized_prompt, method="embed")
             tokens.append(tokenized_inputs)
             input_mask.append(obs.tokenized_prompt_mask)
@@ -157,7 +156,11 @@ class Pi0(_model.BaseModel):
             # image/language inputs do not attend to state or actions
             ar_mask += [True]
 
-        # jax.debug.print("NOISY ACTIONS: {noisy_actions}", noisy_actions=noisy_actions)
+        jax.debug.print("NOISY ACTIONS: {noisy_actions}", noisy_actions=noisy_actions)
+        jax.debug.print("OBS.ARROWS: {arrows}", arrows=obs.arrows)
+        arrows = jnp.asarray(obs.arrows).reshape(-1)
+        noisy_actions = noisy_actions.at[0, 0:8, 0:7].add(5*arrows[:7]) # attempt to add just to one (need to think on this approach)
+
         action_tokens = self.action_in_proj(noisy_actions)
         # embed timestep using sine-cosine positional encoding with sensitivity in the range [0, 1]
         time_emb = posemb_sincos(timestep, self.action_in_proj.out_features, min_period=4e-3, max_period=4.0)

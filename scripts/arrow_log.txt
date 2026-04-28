@@ -1,0 +1,144 @@
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+initial joint velocity arrows: [-0.30101143 -0.02729756 -0.52578025 -0.01697823 -0.27574306 -0.00756052
+ -0.64987764  0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [-0.30052038 -0.03535534 -0.53033009 -0.01767767 -0.28284271  0.
+ -0.65407377  0.        ]
+decoded mean first 8 dims: [-0.30052038 -0.03535534 -0.53033009 -0.01767767 -0.28284271  0.
+ -0.65407377  0.        ]
+fast_arrow_vals [[256664 256751 256594 256757 256675 256767 256564 256329 256627      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [-0.31195173 -0.05604425 -0.49329415 -0.04651566 -0.25780946 -0.0049644
+ -0.64531811  0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [-0.31819805 -0.05303301 -0.49497475 -0.05303301 -0.26516504  0.
+ -0.65407377  0.        ]
+decoded mean first 8 dims: [-0.31819805 -0.05303301 -0.49497475 -0.05303301 -0.26516504  0.
+ -0.65407377  0.        ]
+fast_arrow_vals [[256659 256743 256601 256743 256682 256767 256564 256329 256627      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [-0.32616347 -0.05625783 -0.49156554 -0.0475752  -0.28137125 -0.00362353
+ -0.64212434  0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [-0.31819805 -0.05303301 -0.49497475 -0.05303301 -0.28284271  0.
+ -0.6363961   0.        ]
+decoded mean first 8 dims: [-0.31819805 -0.05303301 -0.49497475 -0.05303301 -0.28284271  0.
+ -0.6363961   0.        ]
+fast_arrow_vals [[256659 256743 256601 256743 256675 256767 256571 256329 256627      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [-0.34049895 -0.05646244 -0.489798   -0.04855511 -0.30488826 -0.00239741
+ -0.63866168  0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [-0.33587572 -0.05303301 -0.49497475 -0.05303301 -0.30052038  0.
+ -0.6363961   0.        ]
+decoded mean first 8 dims: [-0.33587572 -0.05303301 -0.49497475 -0.05303301 -0.30052038  0.
+ -0.6363961   0.        ]
+fast_arrow_vals [[256653 256743 256601 256743 256664 256767 256571 256329 256627      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+initial joint velocity arrows: [-0.29845821 -0.25104867 -0.43271422 -0.28169548 -0.14571281  0.06075249
+ -0.63740402  0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [-0.30052038 -0.24748737 -0.42426407 -0.28284271 -0.14142136  0.05303301
+ -0.6363961   0.        ]
+decoded mean first 8 dims: [-0.30052038 -0.24748737 -0.42426407 -0.28284271 -0.14142136  0.05303301
+ -0.6363961   0.        ]
+fast_arrow_vals [[256664 256688 256619 256675 256207 256571 256329 256627      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [-0.30811891 -0.26682639 -0.41389372 -0.30763973 -0.14138812  0.06917297
+ -0.63100748  0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [-0.30052038 -0.26516504 -0.4065864  -0.30052038 -0.14142136  0.07071068
+ -0.6363961   0.        ]
+decoded mean first 8 dims: [-0.30052038 -0.26516504 -0.4065864  -0.30052038 -0.14142136  0.07071068
+ -0.6363961   0.        ]
+fast_arrow_vals [[256664 256682 256623 256664 256114 256571 256329 256627      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [-0.31652298 -0.26491048 -0.41510127 -0.30836159 -0.16640522  0.07155638
+ -0.6237286   0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [-0.31819805 -0.26516504 -0.4065864  -0.30052038 -0.15909903  0.07071068
+ -0.61871843  0.        ]
+decoded mean first 8 dims: [-0.31819805 -0.26516504 -0.4065864  -0.30052038 -0.15909903  0.07071068
+ -0.61871843  0.        ]
+fast_arrow_vals [[256659 256682 256623 256664 255688 256575 256329 256627      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+initial joint velocity arrows: [ 0.3565456   0.28876754  0.36694787  0.35538126  0.18271431 -0.10042391
+  0.60789656  0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [ 0.35355339  0.28284271  0.37123106  0.35355339  0.1767767  -0.10606602
+  0.60104076  0.        ]
+decoded mean first 8 dims: [ 0.35355339  0.28284271  0.37123106  0.35355339  0.1767767  -0.10606602
+  0.60104076  0.        ]
+fast_arrow_vals [[256654 256679 256652 256654 255282 256596 256329 256627      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [ 0.36412787  0.28688259  0.36851089  0.35498548  0.20546757 -0.10130103
+  0.60118578  0.        ]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [ 0.37123106  0.28284271  0.37123106  0.35355339  0.21213203 -0.10606602
+  0.60104076  0.        ]
+decoded mean first 8 dims: [ 0.37123106  0.28284271  0.37123106  0.35355339  0.21213203 -0.10606602
+  0.60104076  0.        ]
+fast_arrow_vals [[256652 256679 256652 256654 256704 256728 256596 256329 256627      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0      0      0      0      0      0      0      0      0
+       0      0]]
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]
+initial joint velocity arrows: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded arrow action shape: (32, 32)
+decoded first timestep: [0. 0. 0. 0. 0. 0. 0. 0.]
+decoded mean first 8 dims: [0. 0. 0. 0. 0. 0. 0. 0.]
+fast_arrow_vals [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]

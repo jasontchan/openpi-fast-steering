@@ -126,7 +126,6 @@ class Pi0(_model.BaseModel):
 
         # add language (aka tokenized inputs)
         if obs.tokenized_prompt is not None:
-            # jax.debug.print("obs.tokenized_prompt is {otp}", otp=obs.tokenized_prompt)
             tokenized_inputs = self.PaliGemma.llm(obs.tokenized_prompt, method="embed")
             tokens.append(tokenized_inputs)
             input_mask.append(obs.tokenized_prompt_mask)
@@ -157,8 +156,28 @@ class Pi0(_model.BaseModel):
             # image/language inputs do not attend to state or actions
             ar_mask += [True]
 
-        # jax.debug.print("NOISY ACTIONS: {noisy_actions}", noisy_actions=noisy_actions)
         action_tokens = self.action_in_proj(noisy_actions)
+
+        #POST PROJECTION TOKEN EDIT
+        arrows = jnp.asarray(obs.arrows)
+
+        if arrows.ndim == 1:
+            arrows = arrows[None, :]
+        elif arrows.ndim > 2:
+            arrows = arrows.reshape(arrows.shape[0], -1)
+        
+        arrow_vec = arrows[:, :7] #just want the seven joint positions
+
+        arrow_action = jnp.zeros_like(noisy_actions)
+
+        scale = 5.0
+        arrow_action = arrow_action.at[:, 0:8, 0:7].set(scale * arrow_vec[:, None, :])
+
+        token_delta = self.action_in_proj(arrow_action) # this is shape (B, action horizon, embed dim)
+
+        token_scale = 1.0
+        action_tokens = action_tokens.at[:, 0:8, :].add(token_scale * token_delta[:, 0:8, :])
+
         # embed timestep using sine-cosine positional encoding with sensitivity in the range [0, 1]
         time_emb = posemb_sincos(timestep, self.action_in_proj.out_features, min_period=4e-3, max_period=4.0)
         if self.pi05:

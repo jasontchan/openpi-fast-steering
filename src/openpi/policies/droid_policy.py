@@ -71,6 +71,13 @@ class DroidInputs(transforms.DataTransformFn):
                 data["prompt"] = data["prompt"].decode("utf-8")
             inputs["prompt"] = data["prompt"]
 
+        if "observation/arrows" in data or "arrows" in data:
+            inputs["arrows"] = data["observation/arrows"]
+        
+        if "observation/jposarrows" in data or "jposarrows" in data:
+            inputs["jposarrows"] = data["observation/jposarrows"]
+
+
         return inputs
 
 

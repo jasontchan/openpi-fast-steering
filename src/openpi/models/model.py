@@ -94,6 +94,16 @@ class Observation(Generic[ArrayT]):
     # Low-dimensional robot state.
     state: at.Float[ArrayT, "*b s"]
 
+    # arrows
+    arrows: at.Float[ArrayT, "*b na"]
+
+    fast_arrows: at.Int[ArrayT, "*b ad"] #batch, tokenized actions
+
+    fast_arrows_mask: at.Bool[ArrayT, "*b ad"]
+
+    # joint position arrows (the above are joint velocities)
+    jposarrows: at.Float[ArrayT, "*b ja"] | None = None
+
     # Tokenized prompt.
     tokenized_prompt: at.Int[ArrayT, "*b l"] | None = None
     # Tokenized prompt mask.
@@ -118,15 +128,32 @@ class Observation(Generic[ArrayT]):
                 data["image"][key] = data["image"][key].astype(np.float32) / 255.0 * 2.0 - 1.0
             elif hasattr(data["image"][key], "dtype") and data["image"][key].dtype == torch.uint8:
                 data["image"][key] = data["image"][key].to(torch.float32).permute(0, 3, 1, 2) / 255.0 * 2.0 - 1.0
-        return cls(
-            images=data["image"],
-            image_masks=data["image_mask"],
-            state=data["state"],
-            tokenized_prompt=data.get("tokenized_prompt"),
-            tokenized_prompt_mask=data.get("tokenized_prompt_mask"),
-            token_ar_mask=data.get("token_ar_mask"),
-            token_loss_mask=data.get("token_loss_mask"),
-        )
+        if "jposarrows" not in data:
+            return cls(
+                images=data["image"],
+                image_masks=data["image_mask"],
+                state=data["state"],
+                arrows=data["arrows"],
+                fast_arrows=data["tokenized_arrows"],
+                fast_arrows_mask=data["tokenized_arrows_mask"],
+                tokenized_prompt=data.get("tokenized_prompt"),
+                tokenized_prompt_mask=data.get("tokenized_prompt_mask"),
+                token_ar_mask=data.get("token_ar_mask"),
+                token_loss_mask=data.get("token_loss_mask"),
+            )
+        else:
+            return cls(
+                images=data["image"],
+                image_masks=data["image_mask"],
+                state=data["state"],
+                arrows=data["arrows"],
+                fast_arrows=data["tokenized_arrows"],
+                fast_arrows_mask=data["tokenized_arrows_mask"],
+                tokenized_prompt=data.get("tokenized_prompt"),
+                tokenized_prompt_mask=data.get("tokenized_prompt_mask"),
+                token_ar_mask=data.get("token_ar_mask"),
+                token_loss_mask=data.get("token_loss_mask"),
+            )
 
     def to_dict(self) -> at.PyTree[ArrayT]:
         """Convert the Observation to a nested dict."""
@@ -201,6 +228,10 @@ def preprocess_observation(
         images=out_images,
         image_masks=out_masks,
         state=observation.state,
+        arrows=observation.arrows,
+        jposarrows=observation.jposarrows,
+        fast_arrows=observation.fast_arrows,
+        fast_arrows_mask=observation.fast_arrows_mask,
         tokenized_prompt=observation.tokenized_prompt,
         tokenized_prompt_mask=observation.tokenized_prompt_mask,
         token_ar_mask=observation.token_ar_mask,

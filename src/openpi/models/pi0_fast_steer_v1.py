@@ -275,63 +275,39 @@ class Pi0FAST(_model.BaseModel):
 
         # prepare decoding -- final logit decodes the first token
         last_logit = prefix_logits[:, -1:]
-        output_tokens = jnp.zeros((last_logit.shape[0], max_decoding_steps), dtype=jnp.int32)
+        output_tokens = jnp.zeros((last_logit.shape[0], max_decoding_steps))
         fast_arrow_vals = observation.fast_arrows
         fast_arrow_vals_mask = observation.fast_arrows_mask
         jax.debug.print("fast_arrow_vals {fast_arrow_vals}", fast_arrow_vals=fast_arrow_vals)
 
-        action_prefix_tokens = jnp.asarray(
-            self.tokenizer._paligemma_tokenizer.encode("Action: "),
-            dtype=jnp.int32,
-        )
-        action_prefix_len = action_prefix_tokens.shape[0]
-
         def step(carry):
             rng, last_logit, output_tokens, cache, _, step = carry
 
-            jax.debug.print("at step {step} my output tokens are {output_tokens}", step=step, output_tokens=output_tokens)
             # Sample token from last logit
             # Split RNG for this step
             rng, rng_step = jax.random.split(rng)
-            # normal sampled token
             sampled_token = jax.lax.cond(
                 temperature > 0.0,
                 lambda _: jax.random.categorical(rng_step, last_logit / temperature, axis=-1),
                 lambda _: jnp.argmax(last_logit, axis=-1),
                 operand=None,
-            )  # (B, 1)
+            ) #(B, 1)
 
-            # Ensure we inject "Action: " prefix first (note: idk why this was never here..?)
-            prefix_idx = jnp.minimum(step, action_prefix_len - 1)
-            prefix_token = jnp.broadcast_to(
-                action_prefix_tokens[prefix_idx],
-                sampled_token.shape,
-            )
-
-            use_action_prefix = step < action_prefix_len
-
-            # inject FAST arrow tokens after "Action: "
+            #arrow token override
             arrow_len = fast_arrow_vals.shape[-1]
-            arrow_step = step - action_prefix_len
-            arrow_idx = jnp.clip(arrow_step, 0, arrow_len - 1)
+            arrow_idx = jnp.minimum(step, arrow_len - 1)
 
-            arrow_token = fast_arrow_vals[:, arrow_idx][:, None] # (B, 1)
-            arrow_mask = fast_arrow_vals_mask[:, arrow_idx][:, None] # (B, 1)
+            arrow_token = fast_arrow_vals[:, arrow_idx][:, None] #(B, 1)
+            arrow_mask = fast_arrow_vals_mask[:, arrow_idx][:, None] #(B, 1)
 
-            inject_window = 2  #from 1,...valid token length
+            inject_start = 0
+            inject_window = 2
 
-            use_arrow = (
-                (step >= action_prefix_len)
-                & (step < action_prefix_len + inject_window)
-                & arrow_mask.astype(bool)
-            )
-            # decide what kind of token, 
-            # either 1) "Action: " 2) steering arrow 3) normal sampled action from logits
-            token = jnp.where(
-                use_action_prefix,
-                prefix_token,
-                jnp.where(use_arrow, arrow_token, sampled_token),
-            )
+            in_injection_window = (step >= inject_start) & (step < inject_start + inject_window)
+
+            use_arrow = arrow_mask.astype(bool) & in_injection_window
+            
+            token = jnp.where(use_arrow, arrow_token, sampled_token) #use arrow token if mask says so, else use sampled
 
             output_tokens = put_along_last_axis(output_tokens, jnp.broadcast_to(step, (token.shape[0], 1)), token)
 

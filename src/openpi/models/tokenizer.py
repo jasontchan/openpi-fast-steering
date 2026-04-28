@@ -19,10 +19,16 @@ class PaligemmaTokenizer:
         with path.open("rb") as f:
             self._tokenizer = sentencepiece.SentencePieceProcessor(model_proto=f.read())
 
-    def tokenize(self, prompt: str, state: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
+    def tokenize(self, prompt: str, state: np.ndarray | None = None, jposarrows: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
         cleaned_text = prompt.strip().replace("_", " ").replace("\n", " ")
         if state is not None:
+            print(f"STATE is shape {state.shape} and looks like {state}")
             # This is the Pi05 format, where the state is part of the discrete language input.
+            # print(f"jposarrows is {jposarrows}")
+            if jposarrows is not None and jposarrows.sum() != 0:
+                gripper = state[-1]
+                state = np.concatenate([jposarrows[:-1], [gripper]]) #retain gripper state (do not perturb it)
+                print(f"STATE IS NOW CHANGED AND IS {state}")
             discretized_state = np.digitize(state, bins=np.linspace(-1, 1, 256 + 1)[:-1]) - 1
             state_str = " ".join(map(str, discretized_state))
             full_prompt = f"Task: {cleaned_text}, State: {state_str};\nAction: "
@@ -62,7 +68,7 @@ class FASTTokenizer:
         self._fast_skip_tokens = 128  # Skip last 128 tokens in PaliGemma vocab since they are special tokens
 
     def tokenize(
-        self, prompt: str, state: np.ndarray, actions: np.ndarray | None
+        self, prompt: str, state: np.ndarray, actions: np.ndarray | None, arrows: np.ndarray | None = None
     ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         cleaned_text = prompt.lower().strip().replace("_", " ")
 
