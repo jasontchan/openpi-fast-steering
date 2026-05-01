@@ -318,7 +318,7 @@ class Pi0FAST(_model.BaseModel):
             arrow_token = fast_arrow_vals[:, arrow_idx][:, None] # (B, 1)
             arrow_mask = fast_arrow_vals_mask[:, arrow_idx][:, None] # (B, 1)
 
-            freq_offset = 2      # skip first two FAST tokens
+            freq_offset = 5      # skip first two FAST tokens
             inject_window = 2    # inject tokens 3 and 4 only
 
             arrow_step = step - action_prefix_len
