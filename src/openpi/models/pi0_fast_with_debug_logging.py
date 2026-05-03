@@ -322,21 +322,21 @@ class Pi0FAST(_model.BaseModel):
             arrow_mask = fast_arrow_vals_mask[:, arrow_idx][:, None].astype(bool)
 
             #UNCOMMENT BELOW FOR INJECTION WINDOW == FULL FAST ARROW TOKEN SEQ
-            # inject_window = fast_arrow_len
+            inject_window = fast_arrow_len
             
-            # use_arrow = (
-            #     (step >= action_prefix_len)
-            #     & (arrow_step < inject_window[:, None])
-            #     & arrow_mask
-            # )
-
-            #UNCOMMENT BELOW FOR MANUAL INJECT WINDOW SWEEP
-            inject_window = 3
             use_arrow = (
                 (step >= action_prefix_len)
-                & (step < action_prefix_len + inject_window)
-                & arrow_mask.astype(bool)
+                & (arrow_step < inject_window[:, None])
+                & arrow_mask
             )
+
+            #UNCOMMENT BELOW FOR MANUAL INJECT WINDOW SWEEP
+            # inject_window = 3
+            # use_arrow = (
+            #     (step >= action_prefix_len)
+            #     & (step < action_prefix_len + inject_window)
+            #     & arrow_mask.astype(bool)
+            # )
             jax.debug.print("use arrow is {use_arrow}", use_arrow=use_arrow)
 
             # decide what kind of token, 
@@ -381,9 +381,10 @@ class Pi0FAST(_model.BaseModel):
             # before serializing over websocket. Keeping return_debug=False by default preserves
             # backward compatibility with existing code that expects only output_tokens.
             debug = {
-                "full_output_buffer": output_tokens,
-                "full_generated_fast_arrows": fast_arrow_vals,
-                "full_generated_fast_arrows_mask": fast_arrow_vals_mask,
+                "generated_fast_tokens": output_tokens,
+                "raw_fast_arrow_vals": fast_arrow_vals,
+                "raw_fast_arrow_mask": fast_arrow_vals_mask,
+                "injected_fast_tokens": fast_arrow_vals,
                 "action_prefix_len": action_prefix_len,
                 "fast_arrow_len": fast_arrow_len,
             }
