@@ -285,15 +285,16 @@ class Pi0FAST(_model.BaseModel):
             dtype=jnp.int32,
         )
         action_prefix_len = action_prefix_tokens.shape[0]
+        fast_arrow_len = jnp.sum(fast_arrow_vals_mask, axis=-1)  # shape (B,)
+
 
         def step(carry):
             rng, last_logit, output_tokens, cache, _, step = carry
 
-            jax.debug.print("at step {step} my output tokens are {output_tokens}", step=step, output_tokens=output_tokens)
             # Sample token from last logit
             # Split RNG for this step
             rng, rng_step = jax.random.split(rng)
-            # normal sampled token
+            # 1. Normal sampled token
             sampled_token = jax.lax.cond(
                 temperature > 0.0,
                 lambda _: jax.random.categorical(rng_step, last_logit / temperature, axis=-1),
@@ -315,24 +316,27 @@ class Pi0FAST(_model.BaseModel):
             arrow_step = step - action_prefix_len
             arrow_idx = jnp.clip(arrow_step, 0, arrow_len - 1)
 
-            arrow_token = fast_arrow_vals[:, arrow_idx][:, None] # (B, 1)
-            arrow_mask = fast_arrow_vals_mask[:, arrow_idx][:, None] # (B, 1)
-
-            freq_offset = 2      # skip first two FAST tokens
-            inject_window = 2    # inject tokens 3 and 4 only
-
-            arrow_step = step - action_prefix_len
-            arrow_idx = jnp.clip(arrow_step, 0, arrow_len - 1)
-
             arrow_token = fast_arrow_vals[:, arrow_idx][:, None]
-            arrow_mask = fast_arrow_vals_mask[:, arrow_idx][:, None]
+            arrow_mask = fast_arrow_vals_mask[:, arrow_idx][:, None].astype(bool)
 
+            #UNCOMMENT BELOW FOR INJECTION WINDOW == FULL FAST ARROW TOKEN SEQ
+            inject_window = fast_arrow_len
+            
             use_arrow = (
-                (arrow_step >= freq_offset)
-                & (arrow_step < freq_offset + inject_window)
-                & arrow_mask.astype(bool)
+                (step >= action_prefix_len)
+                & (arrow_step < inject_window[:, None])
+                & arrow_mask
             )
-            jax.debug.print("use_arrow {use_arrow}", use_arrow=use_arrow)
+
+            #UNCOMMENT BELOW FOR MANUAL INJECT WINDOW SWEEP
+            # inject_window = 3
+            # use_arrow = (
+            #     (step >= action_prefix_len)
+            #     & (step < action_prefix_len + inject_window)
+            #     & arrow_mask.astype(bool)
+            # )
+            jax.debug.print("use arrow is {use_arrow}", use_arrow=use_arrow)
+
             # decide what kind of token, 
             # either 1) "Action: " 2) steering arrow 3) normal sampled action from logits
             token = jnp.where(

@@ -288,8 +288,8 @@ class TokenizeFASTInputs(DataTransformFn):
 
         arrows = np.asarray(arrows, dtype=np.float32).reshape(-1)
 
-        arrows_action_chunk = np.zeros((10, 8), dtype=np.float32)
-        arrows_action_chunk[:, :] = arrows[None, :]
+        arrows_action_chunk = np.zeros((1, 32, 32), dtype=np.float32)
+        arrows_action_chunk[0, :, :arrows.shape[0]] = arrows[None, :]
 
         fast_arrows = self.tokenizer._fast_tokenizer(arrows_action_chunk)[0]
         fast_arrows_pg = self.tokenizer._act_tokens_to_paligemma_tokens(fast_arrows).astype(np.int32)
@@ -305,8 +305,8 @@ class TokenizeFASTInputs(DataTransformFn):
 
         decoded = self.tokenizer._fast_tokenizer.decode(
             [fast_tokens_back.tolist()],
-            time_horizon=10,
-            action_dim=8,
+            time_horizon=32,
+            action_dim=32,
         )[0]
 
         print("decoded arrow action shape:", decoded.shape)
